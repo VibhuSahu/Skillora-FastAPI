@@ -1,29 +1,28 @@
 from fastapi import FastAPI, Body
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 app = FastAPI()
 
 
-# Models
 class User(BaseModel):
     username: str
-    comment: str
+    mail: EmailStr
+    rating: int
 
 
 
-# Routers
+
+
 @app.get("/")
 async def root() -> str:
     return "Hello World Hide"
 
 @app.post("/")
-async def response_my_name(payload: dict = Body(...)) -> str:
-    return f"Hi! it {payload["name"]}"
+async def response_my_name(payload: User) -> str:
+    return f"Hi! it {payload.username} and your eamil is {payload.mail} you rated {payload.rating} star to the Course"
 
-@app.post("/user_comment")
-async def user_comment(UserData: User):
-    return{
-        "Your Name": UserData.username,
-        "Your Comment": UserData.comment
-    }
+
+@app.post("/Hi")
+async def user_comment(payload: dict = Body(...)) -> str:
+    return f"Hi! it {payload["name"]}."
