@@ -1,28 +1,46 @@
-from fastapi import FastAPI, Body
-from pydantic import BaseModel, EmailStr
+from fastapi import FastAPI
 
 
-app = FastAPI()
+# Import Modules
+# Import Router
+from app.routers import userCommentRouter
 
 
-class User(BaseModel):
-    username: str
-    mail: EmailStr
-    rating: int
+app = FastAPI(
+    title="Skillora",
+    description="Api for Upskill the Students",
+    version="0.4.0",
+    summary="API build with FastAPI Framework for application Upskill website",
+    terms_of_service="https://example.com",
+    contact={
+        "name": "Vibhu Sahu",
+        "url": "https://example.com",
+        "email": "vibhu6751@gmail.com",
+    },
+    license_info={
+        "name": "GPL-3.0-only",
+        "url": "https://spdx.org/licenses/GPL-3.0-only.html",
+    },
+)
 
 
 
+@app.get("/health")
+def health_check():
+    # Check database connection here
+    database_ok = True
+
+    if database_ok:
+        return {
+            "status": "healthy",
+            "database": "connected"
+        }
+
+    return {
+        "status": "unhealthy",
+        "database": "disconnected"
+    }
 
 
-@app.get("/")
-async def root() -> str:
-    return "Hello World Hide"
-
-@app.post("/")
-async def response_my_name(payload: User) -> str:
-    return f"Hi! it {payload.username} and your eamil is {payload.mail} you rated {payload.rating} star to the Course"
-
-
-@app.post("/Hi")
-async def user_comment(payload: dict = Body(...)) -> str:
-    return f"Hi! it {payload["name"]}."
+# Include Router
+app.include_router(userCommentRouter.router)
