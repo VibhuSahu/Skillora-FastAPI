@@ -25,7 +25,7 @@ app = FastAPI(
 
 
 
-@app.get("/health")
+@app.get("/")
 def health_check():
     # Check database connection here
     database_ok = True
